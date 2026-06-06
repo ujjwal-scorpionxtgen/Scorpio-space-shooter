@@ -4,124 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="Scorpio Space Shooter - #1 Rated Space Shooter Game">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='24'>🎮</text></svg>">
-    <title>Scorpio Space Shooter - #1 Game 2026</title>
+    <meta name="description" content="Scorpio Space Shooter - Play Now!">
+    <link rel="manifest" href="data:application/json,{\"name\":\"Scorpio Shooter\",\"short_name\":\"Scorpio\",\"start_url\":\"/\",\"display\":\"fullscreen\",\"background_color\":\"#000000\",\"theme_color\":\"#00ffff\"}">
+    <title>Scorpio Space Shooter</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background: #000;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Arial', sans-serif;
-            background: #000;
+            font-family: Arial, sans-serif;
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             touch-action: none;
-            -webkit-font-smoothing: antialiased;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        .game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: #000;
-        }
-
-        #gameCanvas {
+        canvas {
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            image-rendering: optimizeSpeed;
-            image-rendering: crisp-edges;
         }
 
-        .ui-overlay {
+        .ui {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 10;
+            z-index: 100;
         }
 
-        .game-stats {
+        .stats {
             position: absolute;
-            top: 12px;
-            left: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 11;
+            top: 15px;
+            left: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.8;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #00ffff;
         }
 
-        .stat-item {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 6px 12px;
-            border-radius: 16px;
-            border: 1px solid rgba(100, 200, 255, 0.4);
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .health-bar {
-            width: 120px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ffff);
-            transition: width 0.15s ease;
-            border-radius: 4px;
-            box-shadow: 0 0 8px #00ffff;
-        }
-
-        .offline-indicator {
+        .combo {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 6px 12px;
-            background: rgba(255, 50, 50, 0.85);
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 700;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
             display: none;
-            z-index: 25;
-            letter-spacing: 0.5px;
+            font-weight: bold;
         }
 
-        .offline-indicator.active {
+        .combo.active {
             display: block;
         }
 
-        .game-menu {
+        .menu {
             position: fixed;
             top: 0;
             left: 0;
@@ -131,80 +83,56 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            z-index: 100;
-            animation: fadeIn 0.3s ease;
+            background: linear-gradient(135deg, #001a4d, #004080, #001a33);
+            z-index: 1000;
         }
 
-        .game-menu.hidden {
+        .menu.hidden {
             display: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .game-title {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #00ffff, #ff00ff, #ffff00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-            text-align: center;
-            animation: pulse 2s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.02); }
-        }
-
-        .game-subtitle {
-            font-size: 1rem;
+        .menu h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
             color: #00ffff;
-            margin-bottom: 32px;
-            letter-spacing: 1px;
+            text-shadow: 0 0 20px #00ffff;
+            letter-spacing: 3px;
         }
 
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
+        .menu p {
+            font-size: 18px;
+            color: #00ffff;
+            margin-bottom: 40px;
         }
 
-        .game-btn {
-            padding: 14px 48px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .menu button {
+            margin: 10px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #6600cc, #3300ff);
             color: white;
-            border: 2px solid #667eea;
+            border: 2px solid #00ffff;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 220px;
+            transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            pointer-events: all;
         }
 
-        .game-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-            border-color: #764ba2;
+        .menu button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            background: linear-gradient(135deg, #7700dd, #4411ff);
         }
 
-        .game-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+        .menu button:active {
+            transform: translateY(-1px);
         }
 
-        .game-over-screen {
+        .game-over {
             position: fixed;
             top: 0;
             left: 0;
@@ -215,334 +143,178 @@
             justify-content: center;
             align-items: center;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 50;
+            z-index: 999;
+            z-index: 999;
         }
 
-        .game-over-screen.active {
+        .game-over.active {
             display: flex;
-            animation: fadeIn 0.3s ease;
         }
 
-        .game-over-title {
-            font-size: 3.5rem;
+        .game-over h2 {
+            font-size: 60px;
             color: #ff3366;
-            margin-bottom: 16px;
-            text-shadow: 0 0 20px #ff3366;
-            font-weight: 900;
-        }
-
-        .final-score {
-            font-size: 1.8rem;
-            color: #00ffff;
-            margin-bottom: 32px;
-            font-weight: 700;
-        }
-
-        .wave-reached {
-            font-size: 1.1rem;
-            color: #ffd43b;
             margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff3366;
+            letter-spacing: 2px;
         }
 
-        .power-up-indicator {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            display: flex;
-            gap: 8px;
-            z-index: 11;
+        .game-over p {
+            font-size: 24px;
+            color: #00ffff;
+            margin: 10px;
+            font-weight: bold;
         }
 
-        .power-up-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .game-over button {
+            margin-top: 30px;
+            padding: 15px 40px;
             font-size: 18px;
-            opacity: 0.25;
-            transition: all 0.2s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+            background: linear-gradient(135deg, #6600cc, #3300ff);
+            color: white;
+            border: 2px solid #00ffff;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: all;
         }
 
-        .power-up-icon.active {
-            opacity: 1;
-            box-shadow: 0 0 12px currentColor;
-            border-color: rgba(255, 255, 255, 0.8);
-            animation: powerPulse 0.6s infinite alternate;
+        .game-over button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
         }
 
-        @keyframes powerPulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
-        }
-
-        .wave-indicator {
+        .wave-banner {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 3.2rem;
-            font-weight: 900;
+            font-size: 48px;
+            font-weight: bold;
             color: #ffff00;
-            text-shadow: 0 0 25px #ffff00;
-            opacity: 0;
+            text-shadow: 0 0 20px #ffff00;
             pointer-events: none;
-            z-index: 15;
-            white-space: nowrap;
-        }
-
-        .wave-indicator.show {
-            animation: waveShow 2.5s ease;
-        }
-
-        @keyframes waveShow {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-            30% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
-        }
-
-        .combo-indicator {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            font-size: 22px;
-            font-weight: 800;
-            color: #ffff00;
-            text-shadow: 0 0 12px #ffff00;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            z-index: 11;
-        }
-
-        .combo-indicator.active {
-            opacity: 1;
-            animation: comboPulse 0.4s ease;
-        }
-
-        @keyframes comboPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
-
-        .fps-counter {
-            position: absolute;
-            top: 12px;
-            right: 120px;
-            font-size: 11px;
-            color: #00ff88;
-            font-family: 'Courier New', monospace;
             display: none;
-            z-index: 11;
+            z-index: 500;
         }
 
-        .fps-counter.show {
+        .wave-banner.show {
             display: block;
+            animation: wavePulse 2s ease-out;
         }
 
-        @media (max-width: 640px) {
-            .game-title {
-                font-size: 2rem;
-            }
-            .stat-item {
-                font-size: 12px;
-                padding: 4px 10px;
-            }
-            .health-bar {
-                width: 100px;
-            }
+        @keyframes wavePulse {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+        }
+
+        .powerup-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .powerup-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            opacity: 0.3;
+            transition: all 0.3s;
+        }
+
+        .powerup-icon.active {
+            opacity: 1;
+            box-shadow: 0 0 15px currentColor;
+            border-color: rgba(255,255,255,0.8);
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div class="offline-indicator" id="offlineIndicator">📡 OFFLINE</div>
-        <div class="fps-counter" id="fpsCounter">60 FPS</div>
-        
-        <div class="ui-overlay">
-            <div class="game-stats">
-                <div class="stat-item">🎯 SCORE: <span id="score">0</span></div>
-                <div class="stat-item">❤️ HEALTH <div class="health-bar"><div class="health-fill" id="healthBar"></div></div></div>
-                <div class="stat-item">🌊 WAVE: <span id="wave">1</span></div>
-            </div>
-            
-            <div class="combo-indicator" id="comboIndicator">🔥 COMBO ×<span id="comboCount">0</span></div>
-            
-            <div class="power-up-indicator">
-                <div class="power-up-icon" id="rapidFire" title="Rapid Fire">⚡</div>
-                <div class="power-up-icon" id="shield" title="Shield">🛡️</div>
-                <div class="power-up-icon" id="multiShot" title="Multi-Shot">🔱</div>
-                <div class="power-up-icon" id="speedBoost" title="Speed Boost">💨</div>
-            </div>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="ui">
+        <div class="stats">
+            <div>SCORE: <span id="score">0</span></div>
+            <div>HEALTH: <span id="health">100</span>%</div>
+            <div>WAVE: <span id="wave">1</span></div>
         </div>
-        
-        <div class="wave-indicator" id="waveIndicator">WAVE 1</div>
-        
-        <div class="game-menu" id="gameMenu">
-            <h1 class="game-title">⚡ SCORPIO ⚡</h1>
-            <p class="game-subtitle">🚀 SPACE SHOOTER 🚀</p>
-            <div class="menu-buttons">
-                <button class="game-btn" id="startBtn">▶ START GAME</button>
-                <button class="game-btn" id="settingsBtn">⚙ SETTINGS</button>
-            </div>
+        <div class="combo" id="combo">🔥 COMBO ×<span id="comboVal">0</span></div>
+        <div class="powerup-indicator">
+            <div class="powerup-icon" id="p1">⚡</div>
+            <div class="powerup-icon" id="p2">🛡️</div>
+            <div class="powerup-icon" id="p3">🔱</div>
+            <div class="powerup-icon" id="p4">💨</div>
         </div>
-        
-        <div class="game-over-screen" id="gameOverScreen">
-            <h2 class="game-over-title">💀 GAME OVER 💀</h2>
-            <p class="final-score">SCORE: <span id="finalScore">0</span></p>
-            <p class="wave-reached">WAVE REACHED: <span id="waveReached">1</span></p>
-            <button class="game-btn" id="restartBtn">🔄 PLAY AGAIN</button>
-        </div>
+        <div class="wave-banner" id="waveBanner"></div>
+    </div>
+
+    <div class="menu" id="menu">
+        <h1>⚡ SCORPIO ⚡</h1>
+        <p>SPACE SHOOTER</p>
+        <button id="startBtn">▶ START</button>
+        <button id="settingsBtn">⚙ SETTINGS</button>
+    </div>
+
+    <div class="game-over" id="gameOver">
+        <h2>GAME OVER</h2>
+        <p>SCORE: <span id="finalScore">0</span></p>
+        <p>WAVE: <span id="finalWave">1</span></p>
+        <button id="restartBtn">🔄 PLAY AGAIN</button>
     </div>
 
     <script>
         'use strict';
-
-        // ============================================================================
-        // PRODUCTION-READY GAME ENGINE - GOOGLE PLAY STORE LEVEL
-        // ============================================================================
-
-        console.log('🎮 Scorpio Space Shooter v2.1 Loading...');
-
-        // Browser compatibility check
-        if (!window.requestAnimationFrame || !window.canvas) {
-            alert('Your browser is not supported. Please use Chrome, Firefox, Safari, or Edge.');
-        }
-
-        // ============================================================================
-        // CORE INITIALIZATION
-        // ============================================================================
-
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d', { alpha: false, antialias: false });
         
-        if (!ctx) {
-            console.error('Failed to get canvas context');
-            throw new Error('Canvas context unavailable');
-        }
+        console.log('🎮 Scorpio Space Shooter Initializing...');
 
-        // DOM Cache
-        const DOM = {
-            scoreDisplay: document.getElementById('score'),
-            waveDisplay: document.getElementById('wave'),
-            healthBar: document.getElementById('healthBar'),
-            comboIndicator: document.getElementById('comboIndicator'),
-            comboCount: document.getElementById('comboCount'),
-            gameMenu: document.getElementById('gameMenu'),
-            gameOverScreen: document.getElementById('gameOverScreen'),
-            finalScore: document.getElementById('finalScore'),
-            waveReached: document.getElementById('waveReached'),
-            waveIndicator: document.getElementById('waveIndicator'),
-            offlineIndicator: document.getElementById('offlineIndicator'),
-            startBtn: document.getElementById('startBtn'),
-            restartBtn: document.getElementById('restartBtn'),
-            settingsBtn: document.getElementById('settingsBtn'),
-            fpsCounter: document.getElementById('fpsCounter'),
-            powerUpIcons: {
-                rapidFire: document.getElementById('rapidFire'),
-                shield: document.getElementById('shield'),
-                multiShot: document.getElementById('multiShot'),
-                speedBoost: document.getElementById('speedBoost')
-            }
-        };
+        // ============================================================================
+        // CANVAS & CONTEXT
+        // ============================================================================
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
         // ============================================================================
         // GAME STATE
         // ============================================================================
-
-        const gameState = {
+        
+        const game = {
             running: false,
             score: 0,
             wave: 1,
             combo: 0,
-            comboTimer: 0,
             maxCombo: 0,
-            touchX: 0,
-            touchY: 0,
-            touchActive: false,
-            lastFrameTime: performance.now(),
-            frameCount: 0,
-            fpsCheckTime: performance.now()
+            frameCount: 0
         };
-
-        // ============================================================================
-        // OBJECT POOLS (FIXED MEMORY ALLOCATION)
-        // ============================================================================
-
-        const pools = {
-            bullets: [],
-            enemyBullets: [],
-            enemies: [],
-            particles: [],
-            explosions: []
-        };
-
-        const poolSizes = {
-            bullets: 300,
-            enemyBullets: 400,
-            enemies: 80,
-            particles: 800,
-            explosions: 50
-        };
-
-        function initPools() {
-            Object.keys(pools).forEach(poolType => {
-                pools[poolType] = [];
-                for (let i = 0; i < poolSizes[poolType]; i++) {
-                    pools[poolType].push({ active: false });
-                }
-            });
-        }
-
-        function getFromPool(poolType) {
-            const pool = pools[poolType];
-            for (let i = 0; i < pool.length; i++) {
-                if (!pool[i].active) {
-                    pool[i].active = true;
-                    return pool[i];
-                }
-            }
-            // Expand pool as fallback (shouldn't happen often)
-            const newObj = { active: true };
-            pool.push(newObj);
-            console.warn(`Pool '${poolType}' expanded to ${pool.length}`);
-            return newObj;
-        }
-
-        function resetPool(pool) {
-            pool.forEach(obj => { obj.active = false; });
-        }
-
-        // ============================================================================
-        // GAME OBJECTS
-        // ============================================================================
 
         const player = {
             x: 0,
             y: 0,
-            width: 50,
-            height: 50,
-            speed: 0.25,
-            health: 100,
-            maxHealth: 100,
+            w: 50,
+            h: 50,
+            spd: 0.25,
+            hp: 100,
+            maxHp: 100,
             fireRate: 6,
-            fireCounter: 0,
-            powerUps: {
-                rapidFire: false,
-                shield: false,
-                multiShot: false,
-                speedBoost: false
-            },
-            powerUpTimers: {
-                rapidFire: 0,
-                shield: 0,
-                multiShot: 0,
-                speedBoost: 0
-            }
+            fireCount: 0,
+            powerUps: {}
         };
 
         let enemies = [];
@@ -552,314 +324,248 @@
         let boss = null;
 
         // ============================================================================
-        // GAME CONFIGURATION
+        // STARS BACKGROUND
         // ============================================================================
-
-        const config = {
-            enemyTypes: {
-                basic: { w: 40, h: 40, hp: 2, spd: 2, col: '#ff6b6b', pts: 10, fr: 100 },
-                insect: { w: 45, h: 35, hp: 3, spd: 2.5, col: '#ffd43b', pts: 20, fr: 80 },
-                mechanical: { w: 60, h: 60, hp: 8, spd: 1.5, col: '#845ef7', pts: 50, fr: 60 },
-                shooter: { w: 50, h: 50, hp: 5, spd: 1, col: '#ff00ff', pts: 30, fr: 40 }
-            },
-            bossTypes: {
-                destroyer: { w: 200, h: 200, hp: 100, spd: 0.5, col: '#ff3366', pts: 500, fr: 20, nm: 'DESTROYER' },
-                mothership: { w: 250, h: 150, hp: 150, spd: 0.3, col: '#ff00ff', pts: 750, fr: 15, nm: 'MOTHERSHIP' }
-            },
-            powerUpTypes: {
-                rapidFire: { dur: 300, col: '#ff6b6b', ic: '⚡' },
-                shield: { dur: 400, col: '#4dabf7', ic: '🛡️' },
-                multiShot: { dur: 350, col: '#69db7c', ic: '🔱' },
-                speedBoost: { dur: 300, col: '#ffd43b', ic: '💨' },
-                health: { dur: 0, col: '#00ff88', ic: '❤️' }
-            }
-        };
-
-        // ============================================================================
-        // UTILITY FUNCTIONS
-        // ============================================================================
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            player.x = canvas.width / 2 - player.width / 2;
-            player.y = canvas.height - 120;
-        }
-
+        
         function initStars() {
             stars = [];
-            for (let i = 0; i < 120; i++) {
+            for (let i = 0; i < 100; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 2.5,
-                    speed: Math.random() * 2.5 + 0.5,
-                    brightness: Math.random() * 0.7 + 0.3
+                    s: Math.random() * 2,
+                    vy: Math.random() + 0.5,
+                    br: Math.random() * 0.5 + 0.3
                 });
             }
-        }
-
-        function updateHealthBar() {
-            const percent = Math.max(0, (player.health / player.maxHealth) * 100);
-            DOM.healthBar.style.width = percent + '%';
-        }
-
-        function getWaveTier(w) {
-            if (w <= 10) return 'beginner';
-            if (w <= 25) return 'normal';
-            if (w <= 50) return 'hard';
-            if (w <= 99) return 'nightmare';
-            return 'infinite';
-        }
-
-        // ============================================================================
-        // WAVE CREATION
-        // ============================================================================
-
-        function createWave() {
-            // Clear previous entities
-            resetPool(pools.enemies);
-            resetPool(pools.enemyBullets);
-            enemies = [];
-            enemyBullets = [];
-            boss = null;
-            gameState.combo = 0;
-
-            const tier = getWaveTier(gameState.wave);
-            const counts = { beginner: 5, normal: 15, hard: 20, nightmare: 25, infinite: 30 };
-            const baseCount = counts[tier] + gameState.wave * 1.5;
-            const enemyCount = Math.min(Math.floor(baseCount), 50);
-            const diffMult = 1 + gameState.wave * 0.15;
-            const speedCap = { beginner: 4, normal: 6, hard: 8, nightmare: 10, infinite: 12 }[tier];
-
-            // Spawn enemies
-            for (let i = 0; i < enemyCount; i++) {
-                const types = Object.keys(config.enemyTypes);
-                const typeKey = types[Math.floor(Math.random() * types.length)];
-                const type = config.enemyTypes[typeKey];
-
-                const enemy = getFromPool('enemies');
-                Object.assign(enemy, {
-                    x: Math.random() * (canvas.width - type.w),
-                    y: -100 - Math.random() * 200,
-                    w: type.w,
-                    h: type.h,
-                    hp: Math.ceil(type.hp * diffMult),
-                    maxHp: Math.ceil(type.hp * diffMult),
-                    spd: Math.min(type.spd * (1 + gameState.wave * 0.03), speedCap),
-                    col: type.col,
-                    pts: Math.floor(type.pts * diffMult),
-                    fr: type.fr,
-                    fc: 0,
-                    active: true
-                });
-                enemies.push(enemy);
-            }
-
-            // Spawn boss
-            const bossInterval = { beginner: 5, normal: 4, hard: 3, nightmare: 2, infinite: 1 }[tier];
-            if (gameState.wave % bossInterval === 0) {
-                const bossKey = gameState.wave % 10 === 0 ? 'mothership' : 'destroyer';
-                const bossType = config.bossTypes[bossKey];
-
-                boss = {
-                    x: canvas.width / 2 - bossType.w / 2,
-                    y: 50,
-                    w: bossType.w,
-                    h: bossType.h,
-                    hp: bossType.hp,
-                    maxHp: bossType.hp,
-                    spd: bossType.spd,
-                    col: bossType.col,
-                    pts: bossType.pts,
-                    fr: bossType.fr,
-                    fc: 0,
-                    nm: bossType.nm,
-                    active: true
-                };
-            }
-
-            // Show wave indicator
-            DOM.waveIndicator.textContent = `WAVE ${gameState.wave}`;
-            DOM.waveIndicator.classList.add('show');
-            setTimeout(() => DOM.waveIndicator.classList.remove('show'), 2500);
         }
 
         // ============================================================================
         // INPUT HANDLING
         // ============================================================================
+        
+        let mouseX = 0, mouseY = 0, mouseDown = false;
 
-        document.addEventListener('touchstart', (e) => {
-            if (!gameState.running) return;
-            const touch = e.touches[0];
-            gameState.touchX = Math.max(0, Math.min(touch.clientX, canvas.width));
-            gameState.touchY = Math.max(0, Math.min(touch.clientY, canvas.height));
-            gameState.touchActive = true;
-        }, { passive: true });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!gameState.running) return;
-            const touch = e.touches[0];
-            gameState.touchX = Math.max(0, Math.min(touch.clientX, canvas.width));
-            gameState.touchY = Math.max(0, Math.min(touch.clientY, canvas.height));
-        }, { passive: true });
-
-        document.addEventListener('touchend', () => {
-            gameState.touchActive = false;
-        }, { passive: true });
-
-        // Mouse support
-        document.addEventListener('mousemove', (e) => {
-            if (!gameState.running) return;
-            gameState.touchX = e.clientX;
-            gameState.touchY = e.clientY;
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
         });
 
         document.addEventListener('mousedown', () => {
-            if (!gameState.running) return;
-            gameState.touchActive = true;
+            if (game.running) mouseDown = true;
         });
 
         document.addEventListener('mouseup', () => {
-            gameState.touchActive = false;
+            mouseDown = false;
         });
 
-        // ============================================================================
-        // BUTTON EVENTS
-        // ============================================================================
+        document.addEventListener('touchmove', e => {
+            const touch = e.touches[0];
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+        }, {passive: true});
 
-        DOM.startBtn.addEventListener('click', () => {
-            console.log('🎮 Game started');
-            gameState.running = true;
-            gameState.score = 0;
-            gameState.wave = 1;
-            gameState.combo = 0;
-            gameState.maxCombo = 0;
-            
-            player.x = canvas.width / 2 - player.width / 2;
-            player.y = canvas.height - 120;
-            player.health = 100;
-            player.fireCounter = 0;
-            Object.keys(player.powerUps).forEach(key => {
-                player.powerUps[key] = false;
-                player.powerUpTimers[key] = 0;
-            });
+        document.addEventListener('touchstart', () => {
+            if (game.running) mouseDown = true;
+        }, {passive: true});
 
-            resetPool(pools.bullets);
-            resetPool(pools.enemyBullets);
-            resetPool(pools.enemies);
+        document.addEventListener('touchend', () => {
+            mouseDown = false;
+        }, {passive: true});
+
+        // ============================================================================
+        // BUTTON HANDLERS
+        // ============================================================================
+        
+        document.getElementById('startBtn').addEventListener('click', () => {
+            console.log('🎮 START GAME');
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('gameOver').classList.remove('active');
             
+            game.running = true;
+            game.score = 0;
+            game.wave = 1;
+            game.combo = 0;
+            
+            player.x = canvas.width / 2 - player.w / 2;
+            player.y = canvas.height - 100;
+            player.hp = 100;
+            player.fireCount = 0;
+            player.powerUps = {};
+            
+            enemies = [];
             bullets = [];
             enemyBullets = [];
-            enemies = [];
             
-            DOM.gameMenu.classList.add('hidden');
-            updateHealthBar();
             createWave();
             gameLoop();
         });
 
-        DOM.restartBtn.addEventListener('click', () => {
-            DOM.gameOverScreen.classList.remove('active');
-            DOM.startBtn.click();
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            document.getElementById('startBtn').click();
         });
 
-        DOM.settingsBtn.addEventListener('click', () => {
-            alert('⚙️ SETTINGS\n\n✓ Sound: ON\n✓ Vibration: ON\n✓ Graphics: HIGH\n\nMore options coming soon!');
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            alert('⚙️ SETTINGS\n\n✓ Sound: ON\n✓ Vibration: ON\n✓ FPS: 60\n\nMore soon!');
         });
 
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        // ============================================================================
+        // CREATE WAVE
+        // ============================================================================
+        
+        function createWave() {
+            enemies = [];
+            boss = null;
+            game.combo = 0;
+
+            const count = Math.min(5 + game.wave * 2, 40);
+            const mult = 1 + game.wave * 0.15;
+
+            for (let i = 0; i < count; i++) {
+                const types = [
+                    { w: 40, h: 40, hp: 2, spd: 2, col: '#ff6b6b' },
+                    { w: 45, h: 35, hp: 3, spd: 2.5, col: '#ffd43b' },
+                    { w: 50, h: 50, hp: 5, spd: 1, col: '#ff00ff' }
+                ];
+                const type = types[Math.floor(Math.random() * types.length)];
+                
+                enemies.push({
+                    x: Math.random() * (canvas.width - type.w),
+                    y: -100,
+                    w: type.w,
+                    h: type.h,
+                    hp: Math.ceil(type.hp * mult),
+                    maxHp: Math.ceil(type.hp * mult),
+                    spd: type.spd,
+                    col: type.col,
+                    pts: Math.floor((type.hp * 10) * mult),
+                    fr: 80,
+                    fc: Math.random() * 80
+                });
+            }
+
+            if (game.wave % 5 === 0) {
+                boss = {
+                    x: canvas.width / 2 - 100,
+                    y: 50,
+                    w: 200,
+                    h: 200,
+                    hp: 100 * (1 + game.wave * 0.1),
+                    maxHp: 100 * (1 + game.wave * 0.1),
+                    spd: 0.5,
+                    col: '#ff3366',
+                    pts: 500
+                };
+            }
+
+            showWaveBanner(`WAVE ${game.wave}`);
+        }
 
         // ============================================================================
-        // GAME LOOP - MAIN RENDER FUNCTION
+        // WAVE BANNER
         // ============================================================================
+        
+        function showWaveBanner(text) {
+            const banner = document.getElementById('waveBanner');
+            banner.textContent = text;
+            banner.classList.remove('show');
+            setTimeout(() => banner.classList.add('show'), 10);
+        }
 
+        // ============================================================================
+        // UPDATE UI
+        // ============================================================================
+        
+        function updateUI() {
+            document.getElementById('score').textContent = Math.floor(game.score);
+            document.getElementById('health').textContent = Math.max(0, Math.floor(player.hp));
+            document.getElementById('wave').textContent = game.wave;
+            
+            if (game.combo > 0) {
+                document.getElementById('combo').classList.add('active');
+                document.getElementById('comboVal').textContent = game.combo;
+            } else {
+                document.getElementById('combo').classList.remove('active');
+            }
+        }
+
+        // ============================================================================
+        // MAIN GAME LOOP
+        // ============================================================================
+        
         function gameLoop() {
-            if (!gameState.running) return;
+            if (!game.running) return;
             requestAnimationFrame(gameLoop);
 
-            // Time management
-            const now = performance.now();
-            gameState.frameCount++;
-
-            // Draw background
+            // CLEAR
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw stars
+            // DRAW STARS
             ctx.fillStyle = '#fff';
             stars.forEach(star => {
-                star.y += star.speed;
+                star.y += star.vy;
                 if (star.y > canvas.height) star.y = -10;
-                ctx.globalAlpha = star.brightness;
-                ctx.fillRect(star.x, star.y, star.size, star.size);
+                ctx.globalAlpha = star.br;
+                ctx.fillRect(star.x, star.y, star.s, star.s);
             });
             ctx.globalAlpha = 1;
 
             // UPDATE PLAYER
-            if (gameState.touchActive) {
-                const dx = gameState.touchX - (player.x + player.width / 2);
-                const dy = gameState.touchY - (player.y + player.height / 2);
-                const dist = Math.hypot(dx, dy);
-                
-                if (dist > 15) {
-                    player.x += (dx / dist) * player.speed * 8;
-                    player.y += (dy / dist) * player.speed * 8;
-                    player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
-                    player.y = Math.max(0, Math.min(player.y, canvas.height - player.height));
+            if (mouseDown) {
+                const dx = mouseX - (player.x + player.w / 2);
+                const dy = mouseY - (player.y + player.h / 2);
+                const d = Math.hypot(dx, dy);
+                if (d > 20) {
+                    player.x += (dx / d) * player.spd * 8;
+                    player.y += (dy / d) * player.spd * 8;
                 }
             }
+            player.x = Math.max(0, Math.min(player.x, canvas.width - player.w));
+            player.y = Math.max(0, Math.min(player.y, canvas.height - player.h));
 
             // DRAW PLAYER
             ctx.save();
-            ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
-            ctx.fillStyle = player.powerUps.shield ? '#4dabf7' : '#00ffff';
+            ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+            ctx.fillStyle = '#00ffff';
             ctx.beginPath();
-            ctx.moveTo(0, -player.height / 2);
-            ctx.lineTo(player.width / 2, player.height / 2);
-            ctx.lineTo(0, player.height / 3);
-            ctx.lineTo(-player.width / 2, player.height / 2);
+            ctx.moveTo(0, -25);
+            ctx.lineTo(20, 20);
+            ctx.lineTo(0, 10);
+            ctx.lineTo(-20, 20);
             ctx.closePath();
             ctx.fill();
             if (player.powerUps.shield) {
                 ctx.strokeStyle = 'rgba(77, 171, 247, 0.5)';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(0, 0, player.width / 2 + 8, 0, Math.PI * 2);
+                ctx.arc(0, 0, 35, 0, Math.PI * 2);
                 ctx.stroke();
             }
             ctx.restore();
 
             // FIRE BULLETS
-            player.fireCounter++;
-            const fireRate = player.powerUps.rapidFire ? 3 : player.fireRate;
-            if (player.fireCounter >= fireRate) {
+            player.fireCount++;
+            if (player.fireCount >= player.fireRate) {
                 if (player.powerUps.multiShot) {
-                    [-20, 0, 20].forEach(angle => {
-                        const rad = (angle * Math.PI) / 180;
-                        const bullet = getFromPool('bullets');
-                        Object.assign(bullet, {
-                            x: player.x + player.width / 2,
+                    for (let angle of [-20, 0, 20]) {
+                        const rad = angle * Math.PI / 180;
+                        bullets.push({
+                            x: player.x + player.w / 2,
                             y: player.y,
                             vx: Math.sin(rad) * 7,
-                            vy: -9,
-                            active: true
+                            vy: -9
                         });
-                        bullets.push(bullet);
-                    });
+                    }
                 } else {
-                    const bullet = getFromPool('bullets');
-                    Object.assign(bullet, {
-                        x: player.x + player.width / 2,
+                    bullets.push({
+                        x: player.x + player.w / 2,
                         y: player.y,
                         vx: 0,
-                        vy: -9,
-                        active: true
+                        vy: -9
                     });
-                    bullets.push(bullet);
                 }
-                player.fireCounter = 0;
+                player.fireCount = 0;
             }
 
             // UPDATE BULLETS
@@ -867,13 +573,13 @@
                 const b = bullets[i];
                 b.x += b.vx;
                 b.y += b.vy;
-                if (b.y < 0 || b.x < -10 || b.x > canvas.width + 10) {
-                    b.active = false;
+                
+                if (b.y < 0) {
                     bullets.splice(i, 1);
                 } else {
                     ctx.fillStyle = '#00ffff';
                     ctx.shadowColor = '#00ffff';
-                    ctx.shadowBlur = 6;
+                    ctx.shadowBlur = 8;
                     ctx.fillRect(b.x - 2, b.y, 4, 12);
                     ctx.shadowBlur = 0;
                 }
@@ -886,26 +592,24 @@
                 e.fc++;
 
                 if (e.fc >= e.fr) {
-                    const eb = getFromPool('enemyBullets');
-                    Object.assign(eb, {
+                    enemyBullets.push({
                         x: e.x + e.w / 2,
                         y: e.y + e.h,
-                        vx: 0,
-                        vy: 4,
-                        active: true
+                        vy: 4
                     });
-                    enemyBullets.push(eb);
                     e.fc = 0;
                 }
 
                 if (e.y > canvas.height) {
-                    e.active = false;
                     enemies.splice(i, 1);
                 } else {
                     ctx.fillStyle = e.col;
                     ctx.fillRect(e.x, e.y, e.w, e.h);
-                    ctx.fillStyle = 'rgba(100, 255, 100, 0.7)';
-                    ctx.fillRect(e.x + 2, e.y - 6, Math.max(1, (e.hp / e.maxHp) * (e.w - 4)), 3);
+                    
+                    // Health bar
+                    const hpPct = e.hp / e.maxHp;
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillRect(e.x, e.y - 6, e.w * hpPct, 3);
                 }
             }
 
@@ -913,8 +617,8 @@
             for (let i = enemyBullets.length - 1; i >= 0; i--) {
                 const b = enemyBullets[i];
                 b.y += b.vy;
+                
                 if (b.y > canvas.height) {
-                    b.active = false;
                     enemyBullets.splice(i, 1);
                 } else {
                     ctx.fillStyle = '#ff3366';
@@ -929,12 +633,10 @@
                     const e = enemies[j];
                     if (b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
                         e.hp--;
-                        b.active = false;
                         bullets.splice(i, 1);
                         if (e.hp <= 0) {
-                            gameState.score += e.pts;
-                            gameState.combo++;
-                            e.active = false;
+                            game.score += e.pts;
+                            game.combo++;
                             enemies.splice(j, 1);
                         }
                         break;
@@ -945,85 +647,51 @@
             // COLLISION: Enemy bullets vs Player
             for (let i = enemyBullets.length - 1; i >= 0; i--) {
                 const b = enemyBullets[i];
-                if (b.x > player.x && b.x < player.x + player.width &&
-                    b.y > player.y && b.y < player.y + player.height) {
+                if (b.x > player.x && b.x < player.x + player.w &&
+                    b.y > player.y && b.y < player.y + player.h) {
                     if (!player.powerUps.shield) {
-                        player.health -= 10;
+                        player.hp -= 10;
                     }
-                    b.active = false;
                     enemyBullets.splice(i, 1);
                 }
             }
 
             // DRAW BOSS
-            if (boss && boss.active) {
+            if (boss) {
                 ctx.fillStyle = boss.col;
                 ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
-                ctx.fillStyle = 'rgba(255, 100, 100, 0.8)';
-                ctx.fillRect(boss.x + 5, boss.y - 8, Math.max(1, (boss.hp / boss.maxHp) * (boss.w - 10)), 5);
+                
+                const hpPct = boss.hp / boss.maxHp;
                 ctx.fillStyle = '#ff3366';
-                ctx.font = '12px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(boss.nm, boss.x + boss.w / 2, boss.y - 15);
+                ctx.fillRect(boss.x + 10, boss.y - 15, (boss.w - 20) * hpPct, 8);
             }
 
             // UPDATE UI
-            DOM.scoreDisplay.textContent = Math.floor(gameState.score);
-            DOM.waveDisplay.textContent = gameState.wave;
-            updateHealthBar();
+            updateUI();
 
-            if (gameState.combo > 1) {
-                DOM.comboIndicator.classList.add('active');
-                DOM.comboCount.textContent = gameState.combo;
-                gameState.maxCombo = Math.max(gameState.maxCombo, gameState.combo);
-            } else {
-                DOM.comboIndicator.classList.remove('active');
+            // CHECK GAME OVER
+            if (player.hp <= 0) {
+                game.running = false;
+                document.getElementById('finalScore').textContent = Math.floor(game.score);
+                document.getElementById('finalWave').textContent = game.wave;
+                document.getElementById('gameOver').classList.add('active');
+                console.log(`📊 GAME OVER - Score: ${game.score}, Wave: ${game.wave}`);
+                return;
             }
 
-            // GAME OVER CHECK
-            if (player.health <= 0) {
-                gameState.running = false;
-                DOM.finalScore.textContent = Math.floor(gameState.score);
-                DOM.waveReached.textContent = gameState.wave;
-                DOM.gameOverScreen.classList.add('active');
-                console.log(`📊 Game Over - Score: ${gameState.score}, Wave: ${gameState.wave}, Max Combo: ${gameState.maxCombo}`);
-            }
-
-            // NEXT WAVE CHECK
+            // NEXT WAVE
             if (enemies.length === 0 && !boss) {
-                gameState.wave++;
+                game.wave++;
                 createWave();
             }
-
-            // FPS COUNTER
-            if (now - gameState.fpsCheckTime >= 1000) {
-                DOM.fpsCounter.textContent = gameState.frameCount + ' FPS';
-                gameState.frameCount = 0;
-                gameState.fpsCheckTime = now;
-            }
         }
 
         // ============================================================================
-        // INITIALIZATION
+        // INIT
         // ============================================================================
-
-        console.log('✅ Game engine ready');
-
-        initPools();
+        
         initStars();
-
-        // Offline detection
-        window.addEventListener('online', () => DOM.offlineIndicator.classList.remove('active'));
-        window.addEventListener('offline', () => DOM.offlineIndicator.classList.add('active'));
-
-        // Service Worker registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {
-                console.log('ℹ️ Service Worker not available');
-            });
-        }
-
-        console.log('🚀 Scorpio Space Shooter Ready!');
+        console.log('✅ Game ready to play!');
     </script>
 </body>
 </html>
